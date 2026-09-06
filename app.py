@@ -1,5 +1,6 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, flash, session
+from datetime import date, timedelta
 
 app = Flask(__name__)
 app.secret_key = "f7s7hqy8W8HEJQ9JSJiiye8998H"
@@ -41,6 +42,22 @@ def novo_pedido():
         tamanho = int(request.form.get("tamanho"))
         quantidade = int(request.form.get("quantidade"))
         prazo = request.form.get("prazo")
+
+        tamanhos_permitidos = [2, 4, 6, 8, 10, 12]
+
+        if tamanho not in tamanhos_permitidos:
+            flash("O tamanho da paleta deve ser 2, 4, 6, 8, 10 ou 12 cores.")
+            return redirect(url_for("index"))
+
+        if quantidade > 5:
+            flash("A quantidade máxima é de 5 paletas.")
+            return redirect(url_for("index"))
+
+        data_minima = date.today() + timedelta(days=15)
+
+        if date.fromisoformat(prazo) < data_minima:
+            flash("O prazo deve ser de no mínimo 15 dias.")
+            return redirect(url_for("index"))
 
         conexao = sqlite3.connect("Banco.DB")
         cursor = conexao.cursor()
