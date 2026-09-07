@@ -75,7 +75,7 @@ def novo_pedido():
         return redirect(url_for("index"))
 
 USUARIOS = {
-    "nome_adm": {"senha": "123", "perfil": "admin"},
+    "nome_adm": {"senha": "123"},
 }
 
 @app.route("/login", methods=["GET", "POST"])
@@ -91,15 +91,12 @@ def login():
             dados = USUARIOS[usuario_input]
 
             if senha_input == dados["senha"]:
-
-                if dados["perfil"] == "admin":
-                    session["usuario"] = usuario_input
-                    return redirect(url_for("admin"))
+                session["usuario"] = usuario_input
+                return redirect(url_for("admin"))
 
         return render_template("login.html", erro="Usuário ou senha incorretos.")
 
     return render_template("login.html")
-
 
 @app.route("/admin")
 def admin():
